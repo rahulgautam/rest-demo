@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, abort, request, make_response, url_for
+import os
 from functools import wraps
 from hashlib import md5
 from random import random
+from flask import Flask, jsonify, abort, request, make_response, url_for
+
 
 """
 flask.ext.httpauth
@@ -188,29 +190,29 @@ visit = {
     }
 }
 
-@app.route('/restdemo', methods = ['GET'])
-def say_hello():
+@app.route('/', methods = ['GET'])
+def restdemo():
     return "Hi I am RestDemo Web Service"
 
-@app.route('/restdemo/login.php', methods = ['GET'])
+@app.route('/login.php', methods = ['GET'])
 @auth.login_required
 def check_login():
     return jsonify( { 'description': 'OK' } )
     
 
-@app.route('/restdemo/diary', methods = ['GET'])
+@app.route('/diary', methods = ['GET'])
 @auth.login_required
 def get_diary():
     return jsonify( { 'diary': diary } )
 
 
-@app.route('/restdemo/visit', methods = ['GET'])
+@app.route('/visit', methods = ['GET'])
 @auth.login_required
 def get_visit():
     return jsonify( { 'visit': visit } )
 
 
-@app.route('/restdemo/uploaddiary.php', methods = ['POST'])
+@app.route('/uploaddiary.php', methods = ['POST'])
 @auth.login_required
 def create_diary():
     if not request.json or not 'entrydate' in request.json:
@@ -227,7 +229,7 @@ def create_diary():
     return jsonify( { 'description': 'Successfully uploaded' } ), 201
 
 
-@app.route('/restdemo/visitdate.php', methods = ['POST'])
+@app.route('/visitdate.php', methods = ['POST'])
 @auth.login_required
 def create_visit():
     if not request.json or not 'visit_date' in request.json:
