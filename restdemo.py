@@ -12,6 +12,7 @@ import os
 from flask import Flask, jsonify, abort, request, make_response, url_for
 import httpauth
 from htmlfile import welcome_html
+from footprints import MD
 
 app = Flask(__name__)
 auth = httpauth.HTTPBasicAuth()
@@ -23,16 +24,16 @@ users = {
 
 @auth.error_handler
 def unauthorized():
-    return make_response(jsonify( { 'description': 'Unauthorized access' } ), 403)
+    return make_response(jsonify( { 'result': 'Unauthorized access' } ), 403)
     # return 403 instead of 401 to prevent browsers from displaying the default auth dialog
     
 @app.errorhandler(400)
 def not_found(error):
-    return make_response(jsonify( { 'description': 'Bad request' } ), 400)
+    return make_response(jsonify( { 'result': 'Bad request' } ), 400)
  
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify( { 'description': 'Not found' } ), 404)
+    return make_response(jsonify( { 'result': 'Not found' } ), 404)
 
 
 @auth.get_password
@@ -40,6 +41,88 @@ def get_pw(username):
     if username in users:
         return users[username]
     return None
+
+@app.route('/', methods = ['GET'])
+def restdemo():
+    return welcome_html
+
+@app.route('/login.php', methods = ['GET'])
+@auth.login_required
+def check_login():
+    return jsonify( { 'result': 'OK' } )
+
+
+# +--------------------------------------------------------+
+# |     New REST-API functions                             |
+# |--------------------------------------------------------|
+# |                                                        |
+# |     http://restdemo.herokuapp.com/md                   |
+# |                                                        |
+# |     For REST API documention                           |
+# +--------------------------------------------------------+
+
+@app.route('/md/<int:subscriber_id>/filters', methods = ['GET'])
+@auth.login_required
+def get_filters(subscriber_id):
+    if not MD.has_key(subscriber_id):
+        return abort(400)
+    return jsonify( { "result" : MD[subscriber_id]["filters"] } )
+
+@app.route('/md/<int:subscriber_id>', methods = ['GET'])
+@auth.login_required
+def get_subscriber(subscriber_id):
+    if not MD.has_key(subscriber_id):
+        return abort(400)
+    return jsonify( { "result" : MD[subscriber_id]["data"] } )
+
+@app.route('/md/<int:subscriber_id>/<int:account_id>', methods = ['GET'])
+@auth.login_required
+def get_account(subscriber_id, account_id):
+    if not MD.has_key(subscriber_id):
+        return abort(400)
+    li = []
+    for item in MD[subscriber_id]["data"]:
+        if item.get('Acct ID') != account_id:
+            continue
+        li.append(item)
+
+    if len(li) < 1:
+        return abort(400)
+    return jsonify( { "result" : li } )
+
+
+# example for search/filter
+# URI = md/1/q?GPO=MEDASSETS&Account Type=Hospital
+# query = q
+# request.args =  {'GPO': u'MEDASSETS', 'Account Type': u'Hospital'}
+@app.route('/md/<int:subscriber_id>/<query>', methods = ['GET'])
+@auth.login_required
+def md_filter(subscriber_id, query):
+    if not MD.has_key(subscriber_id):
+        return abort(400)
+    li = []
+    for item in MD[subscriber_id]["data"]:
+        flag = True
+        for key in request.args:
+            if item.get(key) != request.args[key]:
+                flag = False
+        if flag:
+            li.append(item)
+    if len(li) < 1:
+        return abort(404)        
+    return jsonify( { "result" : li } )
+    
+#------------ New REST-API Function Ends -------------------
+
+
+# +--------------------------------------------------------+
+# |          Android app related REST-API functions        |
+# |--------------------------------------------------------|
+# |                                                        |
+# |     http://restdemo.herokuapp.com                      |
+# |                                                        |
+# |     For REST API documention                           |
+# +--------------------------------------------------------+
 
 #: client will send this json format to add a new diary
 # {
@@ -99,16 +182,7 @@ visit = {
     }
 }
 
-@app.route('/', methods = ['GET'])
-def restdemo():
-    return welcome_html
-
-@app.route('/login.php', methods = ['GET'])
-@auth.login_required
-def check_login():
-    return jsonify( { 'description': 'OK' } )
-    
-
+ 
 @app.route('/diary', methods = ['GET'])
 @auth.login_required
 def get_diary():
@@ -135,7 +209,7 @@ def create_diary():
     else:
         diary[request.json[user_key]
             ] = {request.json[date_key] : { key_data : request.json[key_data] } }
-    return jsonify( { 'description': 'Successfully uploaded' } ), 201
+    return jsonify( { 'result': 'Successfully uploaded' } ), 201
 
 
 @app.route('/visitdate.php', methods = ['POST'])
@@ -152,7 +226,7 @@ def create_visit():
     else:
         visit[request.json[user_key]
             ] = {request.json[date_key] : { key_data : request.json[key_data] } }
-    return jsonify( { 'description': 'Successfully saved' } ), 201
+    return jsonify( { 'result': 'Successfully saved' } ), 201
 
 @app.route('/diary', methods = ['DELETE'])
 @auth.login_required
@@ -161,7 +235,7 @@ def delete_diary():
         del diary[auth.username]
     else:
         abort(404)    # not found
-    return jsonify( { 'description': 
+    return jsonify( { 'result': 
         'All diary enteries for user %s is deleted'% auth.username} )
 
 @app.route('/visit', methods = ['DELETE'])
@@ -171,8 +245,11 @@ def delete_visit():
         del visit[auth.username]
     else:
         abort(404)    # not found
-    return jsonify( { 'description': 
+    return jsonify( { 'result': 
         'All visit enteries for user %s is deleted'% auth.username} )
 
+
+
+# Start Application
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
