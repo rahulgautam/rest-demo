@@ -12,7 +12,7 @@ import os
 from flask import Flask, jsonify, abort, request, make_response, url_for
 import httpauth
 from htmlfile import welcome_html
-from footprints import MD
+from footprints import MD, subscriber_user
 
 app = Flask(__name__)
 auth = httpauth.HTTPBasicAuth()
@@ -49,7 +49,10 @@ def restdemo():
 @app.route('/login.php', methods = ['GET'])
 @auth.login_required
 def check_login():
-    return jsonify( { 'result': 'OK' } )
+    return jsonify( 
+        { 'result': 'OK',
+          'subscriber_id' : get_subscriber_id()
+        })
 
 
 # +--------------------------------------------------------+
@@ -61,23 +64,33 @@ def check_login():
 # |     For REST API documention                           |
 # +--------------------------------------------------------+
 
-@app.route('/md/<int:subscriber_id>/filters', methods = ['GET'])
+
+def get_subscriber_id():
+    for subscriber in subscriber_user:
+        if subscriber_user[subscriber].count(auth.username):
+            return subscriber
+    return 1
+
+@app.route('/md/subscriber/filters', methods = ['GET'])
 @auth.login_required
-def get_filters(subscriber_id):
+def get_filters():
+    subscriber_id = get_subscriber_id()
     if not MD.has_key(subscriber_id):
         return abort(400)
     return jsonify( { "result" : MD[subscriber_id]["filters"] } )
 
-@app.route('/md/<int:subscriber_id>', methods = ['GET'])
+@app.route('/md/subscriber', methods = ['GET'])
 @auth.login_required
-def get_subscriber(subscriber_id):
+def get_subscriber():
+    subscriber_id = get_subscriber_id()
     if not MD.has_key(subscriber_id):
         return abort(400)
     return jsonify( { "result" : MD[subscriber_id]["data"] } )
 
-@app.route('/md/<int:subscriber_id>/<int:account_id>', methods = ['GET'])
+@app.route('/md/subscriber/<int:account_id>', methods = ['GET'])
 @auth.login_required
-def get_account(subscriber_id, account_id):
+def get_account(account_id):
+    subscriber_id = get_subscriber_id()
     if not MD.has_key(subscriber_id):
         return abort(400)
     li = []
@@ -87,7 +100,7 @@ def get_account(subscriber_id, account_id):
         li.append(item)
 
     if len(li) < 1:
-        return abort(400)
+        return abort(404)
     return jsonify( { "result" : li } )
 
 
@@ -95,11 +108,20 @@ def get_account(subscriber_id, account_id):
 # URI = md/1/q?GPO=MEDASSETS&Account Type=Hospital
 # query = q
 # request.args =  {'GPO': u'MEDASSETS', 'Account Type': u'Hospital'}
-@app.route('/md/<int:subscriber_id>/<query>', methods = ['GET'])
+@app.route('/md/subscriber/<query>', methods = ['GET'])
 @auth.login_required
-def md_filter(subscriber_id, query):
+def md_filter(query):
+
+    subscriber_id = get_subscriber_id()
     if not MD.has_key(subscriber_id):
         return abort(400)
+
+    # check if filter query is properly formed by request
+    filters = MD[subscriber_id]["filters"].keys()
+    if (query != 'q' 
+        or not all(arg in filters for arg in request.args.keys())):
+        return abort(400)
+
     li = []
     for item in MD[subscriber_id]["data"]:
         flag = True

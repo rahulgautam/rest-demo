@@ -1,6 +1,6 @@
 
-welcome_html = """<!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8"><style>html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+welcome_html = """
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 
 body{
   color:#444;
@@ -122,17 +122,17 @@ body{font-size:16px;}
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
-</style><title>WebService URI Information</title></head><body><h1 id="webservice-uri-expose">WebService URI Expose</h1>
+</style><title>WebService URI Expose</title></head><body><h1 id="webservice-uri-information">WebService URI Information</h1>
 
-<p><strong>heroku</strong> : <a href="http://restdemo.herokuapp.com/">restdemo.herokuapp.com</a> <br>
+<p><strong>heroku</strong> : <a href="http://restdemo.herokuapp.com">restdemo.herokuapp.com</a> </br>
 <strong>github</strong> : <a href="http://github.com/rahulgautam/rest-demo">github.com/rahulgautam/rest-demo</a></p>
 
-<p></p><ul>
-  <strong>TOC</strong>
-  <li><a href="http://restdemo.herokuapp.com#new-md-app-uri">New MD App URI</a></li>
-  <li><a href="http://restdemo.herokuapp.com#android-app-uri">Android App URI</a></li>
+<p><ul>
+  <strong>Table of Contents</strong>
+  <li><a href="#new-md-app-uri">New MD App URI</a></li>
+  <li><a href="#android-app-uri">Android App URI</a></li>
 </ul>
-<p></p>
+</p>
 
 <h1 id="new-md-app-uri">New MD App URI</h1>
 
@@ -153,53 +153,53 @@ body{font-size:16px;}
 
 <ul>
 <li>Request Method: GET</li>
-<li>URI: <code>/md/&lt;int:subscriber_id&gt;</code></li>
+<li>URI: <code>/md/subscriber</code></li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/1
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber
 </code></pre>
 
 <p><strong>3. Get data for a particular account details from a subscriber</strong></p>
 
 <ul>
 <li>Request Method: GET</li>
-<li>URI: <code>/md/&lt;int:subscriber_id&gt;/&lt;int:account_id&gt;</code></li>
+<li>URI: <code>/md/subscriber/&lt;int:account_id&gt;</code></li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/1/30312
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/30312
 </code></pre>
 
 <p><strong>4. Get filters for a subscriber</strong></p>
 
 <ul>
 <li>Request Method: GET</li>
-<li>URI: <code>/md/&lt;int:subscriber_id&gt;/filters</code></li>
+<li>URI: <code>/md/subscriber/filters</code></li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/1/filters
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/filters
 </code></pre>
 
 <p><strong>5. Search throgh all the data of a subscriber using filters</strong></p>
 
 <ul>
 <li>Request Method: GET</li>
-<li>URI: <code>/md/&lt;int:subscriber_id&gt;/q?&lt;query_string&gt;</code></li>
+<li>URI: <code>/md/subscriber/q?&lt;query_string&gt;</code></li>
 <li>query_string : "Account Type=Hospital&amp;State=IL&amp;GPO=MEDASSETS"</li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/1/q?Account Type=Hospital&amp;State=IL&amp;GPO=MEDASSETS
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?Account Type=Hospital&amp;State=IL&amp;GPO=MEDASSETS
 </code></pre>
 
 <h1 id="android-app-uri">Android App URI</h1>

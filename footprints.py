@@ -1,5 +1,14 @@
 
 """
+Mapping of User with Subscriber ID
+Holds by subscriber_user dictionary
+
+subscriber_user = { <subscriber_id> : [<user_name/id><ids>] }
+"""
+subscriber_user = { 1 : ['meta']}
+
+
+"""
 # ----------------------------------
 MD contains data for each subscriber
 As defined in XLS file
