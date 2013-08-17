@@ -105,9 +105,10 @@ def get_account(account_id):
 
 
 # example for search/filter
-# URI = md/1/q?GPO=MEDASSETS&Account Type=Hospital
+# URI = md/subscriber/q?GPO=MEDASSETS||PREMIER&Account Type=Hospital&State=IL
 # query = q
-# request.args =  {'GPO': u'MEDASSETS', 'Account Type': u'Hospital'}
+# request.args =  {'GPO': u'MEDASSETS||PREMIER', 'Account Type': u'Hospital', 'State': u'IL'}
+# OR == ||, AND == & in request URI
 @app.route('/md/subscriber/<query>', methods = ['GET'])
 @auth.login_required
 def md_filter(query):
@@ -126,7 +127,7 @@ def md_filter(query):
     for item in MD[subscriber_id]["data"]:
         flag = True
         for key in request.args:
-            if item.get(key) != request.args[key]:
+            if item.get(key) not in request.args[key].split('||'):
                 flag = False
         if flag:
             li.append(item)

@@ -193,13 +193,14 @@ body{font-size:16px;}
 <ul>
 <li>Request Method: GET</li>
 <li>URI: <code>/md/subscriber/q?&lt;query_string&gt;</code></li>
-<li>query_string : "Account Type=Hospital&amp;State=IL&amp;GPO=MEDASSETS"</li>
+<li>query_string : "GPO=MEDASSETS||PREMIER&Account Type=Hospital"</li>
+<li>OR, AND operation in search query <code>OR == ||, AND == &</code></li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?Account Type=Hospital&amp;State=IL&amp;GPO=MEDASSETS
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?GPO=MEDASSETS||PREMIER&Account Type=Hospital
 </code></pre>
 
 <h1 id="android-app-uri">Android App URI</h1>
