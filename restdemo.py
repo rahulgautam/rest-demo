@@ -127,7 +127,7 @@ def md_filter(query):
     for item in MD[subscriber_id]["data"]:
         flag = True
         for key in request.args:
-            if item.get(key) not in request.args[key].split('||'):
+            if item.get(key).strip().lower() not in request.args[key].strip().lower().split('||'):
                 flag = False
         if flag:
             li.append(item)
