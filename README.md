@@ -59,12 +59,15 @@ Test using curl
  - Request Method: GET
  - URI: `/md/subscriber/q?<query_string>`
  - query_string : "Account Type=Hospital&State=IL&GPO=MEDASSETS"
+ - In support for search box (so that an entered search value will get filtered from results currently from AccountName and Address)
+   user must specify like `Search=<search_value>` in query_string.
  - BasicAuth: username:password
+
 
 ```
 Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?Account Type=Hospital&State=IL&GPO=MEDASSETS
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?Account Type=Hospital&State=IL&GPO=MEDASSETS&Search=center
 ```
 
 

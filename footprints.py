@@ -72,6 +72,7 @@ with open("FILE_LOCATION\json_dump", "w") as f:
 MD = {
     1 : {
     "filters" : {
+        'Search' : [],
         'Account Type': ['clinic', 'emergency care', 'hospital'],
         'GPO': ['amerinet',
                     'hgp',

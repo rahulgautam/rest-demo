@@ -104,6 +104,15 @@ def get_account(account_id):
     return jsonify( { "result" : li } )
 
 
+
+def isFind(di, search):
+    key_tuple = ("Account Name", "Address")
+    for key in key_tuple:
+        if search.strip().lower() in di.get(key).strip().lower():
+            return True
+    return False
+
+
 # example for search/filter
 # URI = md/subscriber/q?GPO=MEDASSETS||PREMIER&Account Type=Hospital&State=IL
 # query = q
@@ -127,12 +136,15 @@ def md_filter(query):
     for item in MD[subscriber_id]["data"]:
         flag = True
         for key in request.args:
-            if item.get(key).strip().lower() not in request.args[key].strip().lower().split('||'):
+            # Special key for Search Box
+            if key == "Search": 
+                if not isFind(item, request.args[key]):
+                    flag = False    
+            elif item.get(key).strip().lower() not in request.args[key].strip().lower().split('||'):
                 flag = False
         if flag:
             li.append(item)
-    if len(li) < 1:
-        return abort(404)        
+            
     return jsonify( { "result" : li } )
     
 #------------ New REST-API Function Ends -------------------

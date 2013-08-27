@@ -195,12 +195,14 @@ body{font-size:16px;}
 <li>URI: <code>/md/subscriber/q?&lt;query_string&gt;</code></li>
 <li>query_string : "GPO=MEDASSETS||PREMIER&Account Type=Hospital"</li>
 <li>OR, AND operation in search query <code>OR == ||, AND == &</code></li>
+<li>In support for search box (so that an entered search value will get filtered from results currently from AccountName and Address)
+   user must specify like <code>Search=search_value</code> in query_string.</li>
 <li>BasicAuth: username:password</li>
 </ul>
 
 <pre><code>Test using curl
 ----------------
-# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?GPO=MEDASSETS||PREMIER&Account Type=Hospital
+# curl -u meta:123456 -i http://restdemo.herokuapp.com/md/subscriber/q?GPO=MEDASSETS||PREMIER&Account Type=Hospital&Search=center
 </code></pre>
 
 <h1 id="android-app-uri">Android App URI</h1>
