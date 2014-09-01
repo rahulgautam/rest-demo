@@ -1,0 +1,7 @@
+{
+  "name": "REST-demo",
+  "description": "Simple introductory REST-API demo with flask",
+  "repository": "https://github.com/heroku/button-sample",
+  "logo": "http://i.imgur.com/zx6vdlVs.png",
+  "keywords": ["python", "flask", "REST-API", "introduction"]
+}
