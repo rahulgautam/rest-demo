@@ -1,10 +1,12 @@
-#rest-demo (A REST-API Demo)
+#rest-demo (Simple REST-API mock services using flask)
 
 WebService URI Information
 ==========================
 
 **heroku** : [restdemo.herokuapp.com](http://restdemo.herokuapp.com) </br>
 **github** : [github.com/rahulgautam/rest-demo](http://github.com/rahulgautam/rest-demo)
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 [TOC]
 
